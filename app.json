@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Appointment Booking",
+    "slug": "appointment-mobile",
+    "scheme": "founderappointment",
+    "version": "1.0.3",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router"
+    ],
+    "android": {
+      "package": "com.founderdesign.appointment",
+      "versionCode": 3,
+      "permissions": []
+    },
+    "ios": {
+      "bundleIdentifier": "com.founderdesign.appointment"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "982f7953-524f-4bc6-a9a7-7753366a7010"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+node_modules/
+.expo/
+dist/
+android/
+ios/
+.env
+.env.*
+!.env.example
+.DS_Store
+__MACOSX/
+*.jks
+*.keystore
+*.p12
+src/api_with_console.ts
