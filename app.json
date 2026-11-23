@@ -3,7 +3,7 @@
     "name": "Appointment Booking",
     "slug": "appointment-mobile",
     "scheme": "founderappointment",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "plugins": [
