@@ -1,3 +1,5 @@
+> **Dependency lockfile note (November 2026):** After updating the three Expo SDK 57 patch dependencies, run `npm install` to regenerate `package-lock.json` and then validate with `npm ci`, `npx expo install --check`, `npx expo-doctor`, and `npm run check` before an EAS build. Dependency version changes involving native code can require rebuilding the development APK.
+
 # Appointment Mobile — Setup, Android testing & Google Play release
 
 **App:** `Appointment Booking` — React Native / Expo SDK 57. **Existing backend:** https://api-appointment.founderdesign.com. **Web app:** https://appointment.founderdesign.com.
