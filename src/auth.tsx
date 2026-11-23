@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { api, ApiError, clearSessionCookies, lockAccount } from './api';
 import type { User } from './types';
 
@@ -7,23 +14,21 @@ type Session = {
   ready: boolean;
   signin: (email: string, password: string) => Promise<void>;
   signout: () => Promise<void>;
-  refresh: () => Promise<void> 
+  refresh: () => Promise<void>;
 };
+
 const Context = createContext<Session | null>(null);
-export function AuthProvider({ children }: { children: React.ReactNode ;}) {
 
+export function AuthProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
-
   const [ready, setReady] = useState(false);
 
   const refresh = useCallback(async () => {
-
     try {
-      const u = await api.me();
-      lockAccount(u.public_id);
-      setUser(u);
-    }
-    catch (e) {
+      const currentUser = await api.me();
+      lockAccount(currentUser.public_id);
+      setUser(currentUser);
+    } catch (e) {
       if (e instanceof ApiError && [401, 403].includes(e.status)) {
         lockAccount(null);
         setUser(null);
@@ -31,38 +36,47 @@ export function AuthProvider({ children }: { children: React.ReactNode ;}) {
         throw e;
       }
     }
-
   }, []);
 
   useEffect(() => {
-    refresh().catch(() => { }).finally(() => setReady(true));
+    refresh()
+      .catch(() => {})
+      .finally(() => setReady(true));
   }, [refresh]);
 
-  const signin = async (email: string, password: string) => {
+  const signin = useCallback(async (email: string, password: string) => {
     await clearSessionCookies();
-    const u = await api.login(email, password);
-    setUser(u);
-  };
+    const currentUser = await api.login(email, password);
+    setUser(currentUser);
+  }, []);
 
-  const signout = async () => {
+  const signout = useCallback(async () => {
     try {
       await api.logout();
     } finally {
       setUser(null);
       lockAccount(null);
     }
-  };
+  }, []);
 
-  return <Context.Provider value={{
-    user,
-    ready,
-    signin,
-    signout,
-    refresh
-  }}>
-    {children}
-  </Context.Provider>;
+  const contextValue = useMemo<Session>(
+    () => ({
+      user,
+      ready,
+      signin,
+      signout,
+      refresh,
+    }),
+    [user, ready, signin, signout, refresh],
+  );
+
+  return (
+    <Context.Provider value={contextValue}>
+      {children}
+    </Context.Provider>
+  );
 }
+
 export function useAuth() {
   const x = useContext(Context);
   if (!x) throw new Error('Missing AuthProvider');
